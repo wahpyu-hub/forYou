@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="index.css">
+  <title>Pesan</title>
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-y: auto;
+      padding: 60px 20px 80px;
+    }
+
+    .pesan-card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 640px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      padding: clamp(28px, 6vw, 48px) clamp(24px, 6vw, 44px);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      animation: cardFadeIn 1.2s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .pesan-heading {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      color: white;
+      text-shadow: 0 0 18px rgba(255, 255, 255, 0.6);
+      margin-bottom: 4px;
+      letter-spacing: 2px;
+    }
+
+    .pesan-from {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+      color: rgba(255, 255, 255, 0.45);
+      letter-spacing: 1px;
+      margin-bottom: 32px;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      margin-bottom: 32px;
+    }
+
+    .pesan-body {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: clamp(0.9rem, 2.8vw, 1.05rem);
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 2;
+      letter-spacing: 0.3px;
+      white-space: pre-line;
+    }
+
+    .pesan-body .hi {
+      color: #ffffff;
+      font-weight: 700;
+      text-shadow: 0 0 12px rgba(255,255,255,0.5);
+    }
+
+    .btn-foryou-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 44px;
+    }
+
+    .btn-foryou {
+      border: none;
+      width: 13em;
+      height: 4.5em;
+      border-radius: 3em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #1C1A1C;
+      cursor: pointer;
+      transition: all 400ms ease-in-out;
+    }
+
+    .btn-foryou .text {
+      font-weight: 600;
+      color: #AAAAAA;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .btn-foryou:hover {
+      background: linear-gradient(0deg, #A47CF3, #683FEA);
+      box-shadow:
+        inset 0px 1px 0px 0px rgba(255,255,255,0.4),
+        inset 0px -4px 0px 0px rgba(0,0,0,0.2),
+        0px 0px 0px 4px rgba(255,255,255,0.2),
+        0px 0px 180px 0px #9917FF;
+      transform: translateY(-2px);
+    }
+
+    .btn-foryou:hover .text { color: white; }
+    .btn-foryou:active { transform: translateY(1px); box-shadow: none; }
+
+    /* ── Modal countdown ── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .modal-backdrop.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-box {
+      background: rgba(20, 20, 28, 0.97);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 36px 32px;
+      max-width: 360px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+      transform: scale(0.88) translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease;
+      opacity: 0;
+    }
+
+    .modal-backdrop.show .modal-box {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+
+    .modal-icon { font-size: 2.8rem; margin-bottom: 12px; display: block; }
+
+    .modal-title {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1rem;
+      color: white;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+      line-height: 1.6;
+    }
+
+    .modal-desc {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .modal-timer {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: clamp(2.6rem, 10vw, 3.4rem);
+      color: white;
+      font-weight: 700;
+      text-shadow: 0 0 20px rgba(255,255,255,0.5);
+      margin-bottom: 4px;
+      display: block;
+      line-height: 1;
+      transition: color 0.3s;
+    }
+
+    .modal-timer.urgent {
+      color: #ff6b6b;
+      text-shadow: 0 0 20px rgba(255,80,80,0.6);
+      animation: timerPulse 0.5s ease infinite alternate;
+    }
+
+    @keyframes timerPulse {
+      from { transform: scale(1); }
+      to   { transform: scale(1.12); }
+    }
+
+    .modal-timer-label {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+      display: block;
+    }
+
+    .progress-wrap {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #A47CF3, #683FEA);
+      border-radius: 4px;
+      transition: width 1s linear;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="night"></div>
+
+  <div class="pesan-card">
+    <h1 class="pesan-heading">Pesan</h1>
+    <p class="pesan-from">Dari Kreator untuk <span style="color:rgba(255,255,255,0.8); font-weight:700;">Ameliya Putri</span></p>
+    <div class="divider"></div>
+    <div class="pesan-body">
+<span class="hi">Mel</span>.. gimana game nya.. ? seru gak.. ?
+Aku pinter kan buat nya 😎 hehe..
+
+Thanks sudah ngeluangin waktu ya.
+
+Sebelumnya aku mau minta maaf karena aku ngajak makan berdua secara tiba-tiba sebelumnya.
+Sebetulnya aku hanya ingin ngajak kamu ngobrol santai.
+
+Tapi karena entah kenapa terasa sulit,
+aku membuat ini untuk bisa berkomunikasi dengan mu.
+
+Jujur, aku ingin lebih mengenal mu.
+Tapi entah kenapa terasa sulit.
+
+Setiap ada pertemuan kegiatan susah sekali mau ngobrol santai.
+Belum lagi ada temen-temen yang ngebuat suasana makin canggung.
+
+Jujur saja belakangan ini aku merasa seperti orang gila.
+Gimana gak ? <span class="hi">Every day, my mind is full of you.</span>
+
+Ketawa lagi kan lu 😭🫵 ...
+
+Jadi.. aku harap dengan langkah awal yang ku buat ini,
+aku bisa lebih banyak berkomunikasi dengan mu
+dan bisa mengenal satu sama lain.
+
+Terima kasih sudah meluangkan waktu untuk
+mencoba karya pertama ku. 
+    </div>
+
+    <div class="btn-foryou-wrap">
+      <button class="btn-foryou" id="forYouBtn">
+        <span class="text">for you ✨</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal countdown -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal-box">
+      <span class="modal-icon">🗑️</span>
+      <div class="modal-title">Pesan kreator akan dihapus otomatis dalam</div>
+      <span class="modal-timer" id="modalTimer">15</span>
+      <span class="modal-timer-label">detik</span>
+      <div class="modal-desc">
+        Selanjutnya kamu akan dialihkan secara otomatis.<br>
+        Kamu masih bisa memainkan game yang diberikan kreator,<br>
+        tapi <strong style="color:rgba(255,255,255,0.65)">halaman pesan ini tidak akan bisa dibuka kembali.</strong>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Cek: jika sudah dibaca, redirect langsung ke flower ──
+    if (localStorage.getItem('pesanDibaca') === 'true') {
+      window.location.replace('../flower/flower.html');
+    }
+
+    const forYouBtn     = document.getElementById('forYouBtn');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalTimer    = document.getElementById('modalTimer');
+    const progressBar   = document.getElementById('progressBar');
+
+    const COUNTDOWN = 15;
+    let secondsLeft  = COUNTDOWN;
+    let countInterval = null;
+
+    // BroadcastChannel — tetap kirim sinyal ke tab index jika masih terbuka
+    const bc = new BroadcastChannel('quby_game');
+
+    forYouBtn.addEventListener('click', () => {
+      // Tandai sudah dibaca
+      localStorage.setItem('pesanDibaca', 'true');
+
+      // Kirim sinyal ke tab index.html (jika masih terbuka)
+      bc.postMessage('FOR_YOU_PRESSED');
+
+      // Tampilkan modal
+      modalBackdrop.classList.add('show');
+
+      // Mulai countdown
+      startCountdown();
+
+      // Nonaktifkan tombol agar tidak bisa diklik lagi
+      forYouBtn.disabled = true;
+      forYouBtn.style.opacity = '0.4';
+      forYouBtn.style.cursor  = 'not-allowed';
+    });
+
+    function startCountdown() {
+      updateDisplay();
+
+      countInterval = setInterval(() => {
+        secondsLeft--;
+        updateDisplay();
+
+        if (secondsLeft <= 0) {
+          clearInterval(countInterval);
+          goToFlower();
+        }
+      }, 1000);
+    }
+
+    function updateDisplay() {
+      modalTimer.textContent = secondsLeft;
+      if (secondsLeft <= 10) modalTimer.classList.add('urgent');
+      const pct = (secondsLeft / COUNTDOWN) * 100;
+      progressBar.style.width = pct + '%';
+    }
+
+    // ── Redirect langsung ke flower.html dari tab ini ──
+    function goToFlower() {
+      window.location.href = '../flower/flower.html';
+    }
+  </script>
+
+  
+  <!-- Audio latar — Goo Goo Dolls · Iris -->
+  <audio id="bgMusic" src="Goo-Goo-Dolls–Iris.mp3" preload="auto"></audio>
+  <script>
+    const bgMusic = document.getElementById('bgMusic');
+
+    // Mulai lagu — autoplay, fallback ke klik pertama jika diblokir browser
+    bgMusic.volume = 0.7;
+    bgMusic.play().catch(() => {
+      document.addEventListener('click', () => bgMusic.play(), { once: true });
+    });
+
+    // Simpan posisi tiap detik agar flower.html bisa lanjutkan
+    setInterval(() => {
+      localStorage.setItem('musicTime', bgMusic.currentTime);
+    }, 1000);
+  </script>
+
+</body>
+</html>
