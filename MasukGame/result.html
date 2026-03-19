@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hasil Permainan - Quby</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .result-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(1.8rem, 7vw, 2.4rem);
+            color: var(--brown);
+            margin-bottom: 0;
+            animation: containerPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+
+        .score-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            background: linear-gradient(135deg, rgba(255,182,193,0.3), rgba(255,255,255,0.5));
+            border-radius: 20px;
+            padding: 14px 40px;
+            border: 1.5px solid rgba(255,182,193,0.4);
+            margin: 6px 0;
+            animation: containerPop 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
+        }
+
+        .score-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(3rem, 12vw, 4rem);
+            color: var(--pink-dd);
+            text-shadow: 0 4px 0 rgba(200,50,80,0.2);
+            line-height: 1;
+        }
+
+        .score-unit {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--brown-l);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+    </style>
+</head>
+<body class="mole-game">
+
+    <div class="mole-container result-container">
+
+        <h1 class="result-title">Ampun kak</h1>
+
+        <img src="quby.gif" alt="Quby Lucu" class="result-gif">
+
+        <div class="score-block">
+            <span class="score-unit">Skor Kamu</span>
+            <span class="score-num" id="finalScore">0</span>
+        </div>
+
+        <div class="button-group">
+            <button id="playAgainBtn" class="btn start-btn">Main Lagi? </button>
+            <button id="nextGameBtn"  class="btn next-btn">Game Berikutnya </button>
+            <button id="ticTacToeBtn" class="btn next-btn">Main TicTacToe </button>
+            
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('finalScore').textContent =
+            parseInt(localStorage.getItem('lastScore') || '0');
+
+        document.getElementById('playAgainBtn').addEventListener('click', () => {
+            window.location.href = 'mole.html';
+        });
+        document.getElementById('nextGameBtn').addEventListener('click', () => {
+            window.location.href = '../LastGame/falling.html';
+        });
+        document.getElementById('ticTacToeBtn').addEventListener('click', () => {
+            window.location.href = 'TicTacToe.html';
+        });
+       
+    </script>
+</body>
+</html>

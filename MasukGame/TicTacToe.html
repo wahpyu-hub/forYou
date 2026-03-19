@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="transition.css">
+</head>
+<body class="Play-Game">
+    <div class="game-container">
+        <h1 class="game-title">Ayo Main Game</h1>
+        <p class="game-subtitle">Kamu (X) vs Komputer (O) - Kesulitan Normal</p>
+        <div class="status" id="status">Giliran: Kamu</div>
+        <div class="board" id="board"></div>
+        <div class="button-group">
+            <button class="reset-btn" id="resetBtn">Coba lagi</button>
+            <button class="next-btn" id="nextBtn" style="display: none;">Next game</button>
+        </div>
+    </div>
+
+    <!-- Confetti canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Result Overlay -->
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-card">
+            <span class="result-icon" id="resultIcon"></span>
+            <div class="result-title" id="resultTitle"></div>
+            <div class="result-subtitle" id="resultSubtitle"></div>
+            <button class="result-close-btn" id="resultCloseBtn">Tutup</button>
+        </div>
+    </div>
+    <script src="transition.js"></script>
+    <script src="ticTacToe.js"></script>
+    
+</body>
+</html>

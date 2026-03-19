@@ -1,0 +1,597 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap');
+
+:root {
+    --pink:     #FFB6C1;
+    --pink-d:   #FF8FAA;
+    --pink-dd:  #FF6B8A;
+    --cream:    #FFF5F7;
+    --brown:    #5d3a1a;
+    --brown-l:  #8B5E3C;
+    --green:    #A8D8A8;
+    --green-d:  #5CB85C;
+    --sky:      #AEE1F9;
+    --yellow:   #FFE066;
+    --shadow:   rgba(255,100,150,0.18);
+    --white:    #ffffff;
+    --text-d:   #3d1f0e;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+/* ── Mole game background ───────────────────────────────────────── */
+body.mole-game {
+    background: linear-gradient(160deg, #ffe0ec 0%, #ffd6e8 40%, #ffecd6 100%);
+    position: relative;
+}
+
+body.mole-game::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(255,182,193,0.5) 0%, transparent 45%),
+        radial-gradient(circle at 85% 75%, rgba(255,210,140,0.35) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Floating blobs */
+body.mole-game::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        radial-gradient(circle 80px at 10% 10%, rgba(255,182,193,0.3) 0%, transparent 100%),
+        radial-gradient(circle 60px at 90% 20%, rgba(255,230,102,0.25) 0%, transparent 100%),
+        radial-gradient(circle 100px at 80% 80%, rgba(174,225,249,0.3) 0%, transparent 100%),
+        radial-gradient(circle 70px at 20% 85%, rgba(168,216,168,0.3) 0%, transparent 100%);
+    pointer-events: none;
+    animation: blobDrift 8s ease-in-out infinite alternate;
+}
+
+@keyframes blobDrift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(10px, -10px) scale(1.04); }
+}
+
+/* ── Container ──────────────────────────────────────────────────── */
+.mole-container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 28px;
+    padding: clamp(20px, 5vw, 36px);
+    box-shadow: 0 8px 40px var(--shadow), 0 2px 0 rgba(255,255,255,0.8) inset;
+    text-align: center;
+    width: 90%;
+    max-width: 420px;
+    border: 2px solid rgba(255,182,193,0.4);
+    animation: containerPop 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes containerPop {
+    from { opacity: 0; transform: scale(0.85) translateY(30px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.result-container {
+    max-width: 380px;
+}
+
+/* ── Typography ─────────────────────────────────────────────────── */
+.game-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.8rem, 6vw, 2.4rem);
+    color: var(--brown);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    text-shadow: 0 3px 0 rgba(255,255,255,0.8);
+}
+
+.game-subtitle {
+    font-size: clamp(0.85rem, 3vw, 1rem);
+    color: var(--brown-l);
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+/* ── Status bar ─────────────────────────────────────────────────── */
+.mole-container .status {
+    background: linear-gradient(135deg, rgba(255,182,193,0.35), rgba(255,255,255,0.5));
+    color: var(--brown);
+    border-radius: 50px;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-around;
+    gap: 8px;
+    margin-bottom: 18px;
+    font-size: clamp(0.85rem, 3.5vw, 1rem);
+    font-weight: 800;
+    border: 1.5px solid rgba(255,182,193,0.5);
+    box-shadow: 0 2px 8px rgba(255,100,150,0.1);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--pink-dd);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.1rem, 4vw, 1.4rem);
+    color: var(--brown);
+    transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), color 0.15s;
+}
+
+.stat-value.bump {
+    transform: scale(1.4);
+    color: var(--pink-dd);
+}
+
+/* ── Mole Board ─────────────────────────────────────────────────── */
+.mole-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(8px, 3vw, 16px);
+    margin: 4px 0 18px;
+    padding: clamp(8px, 3vw, 14px);
+    background: rgba(255,182,193,0.15);
+    border-radius: 20px;
+    border: 1.5px solid rgba(255,182,193,0.25);
+}
+
+/* ── Hole ───────────────────────────────────────────────────────── */
+.hole {
+    aspect-ratio: 1 / 1;
+    position: relative;
+    background: radial-gradient(circle at 40% 35%, #7a4e2d 0%, #4a2a0e 100%);
+    border-radius: 50%;
+    box-shadow:
+        inset 0 14px 0 rgba(0,0,0,0.28),
+        inset 0 -4px 0 rgba(255,255,255,0.07),
+        0 6px 18px rgba(0,0,0,0.22),
+        0 2px 0 #3a1e08;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.12s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.hole::after {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 15%;
+    width: 30%;
+    height: 20%;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.hole:active { transform: scale(0.93); }
+
+/* ── Mole image ─────────────────────────────────────────────────── */
+.mole {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    width: 85%;
+    height: 85%;
+    object-fit: contain;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: all;
+    z-index: 2;
+    will-change: transform;
+    animation: moleRise 0.28s cubic-bezier(0.34, 1.45, 0.64, 1) forwards;
+    filter: drop-shadow(0 -4px 8px rgba(0,0,0,0.3));
+    touch-action: manipulation;
+}
+
+@keyframes moleRise {
+    0%   { transform: translateX(-50%) translateY(100%); }
+    100% { transform: translateX(-50%) translateY(5%); }
+}
+
+.mole.hiding {
+    animation: moleHide 0.2s ease-in forwards;
+}
+
+@keyframes moleHide {
+    0%   { transform: translateX(-50%) translateY(5%); }
+    100% { transform: translateX(-50%) translateY(100%); }
+}
+
+/* ── Whack effect ───────────────────────────────────────────────── */
+.mole.whacked {
+    animation: moleWhack 0.35s ease forwards;
+    pointer-events: none;
+    filter: drop-shadow(0 0 12px rgba(255,100,100,0.6));
+}
+
+@keyframes moleWhack {
+    0%   { transform: translateX(-50%) translateY(5%) scale(1) rotate(0deg); }
+    30%  { transform: translateX(-50%) translateY(-10%) scale(1.2) rotate(-15deg); }
+    60%  { transform: translateX(-50%) translateY(20%) scale(0.8) rotate(10deg); }
+    100% { transform: translateX(-50%) translateY(100%) scale(0.5) rotate(-20deg); }
+}
+
+/* Hit stars burst */
+.hit-burst {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(1rem, 4vw, 1.4rem);
+    font-family: 'Fredoka One', cursive;
+    color: var(--pink-dd);
+    font-weight: 900;
+    pointer-events: none;
+    z-index: 10;
+    animation: hitFloat 0.6s ease-out forwards;
+    text-shadow: 0 2px 6px rgba(255,100,150,0.5);
+    white-space: nowrap;
+}
+
+@keyframes hitFloat {
+    0%   { opacity: 1; transform: translateX(-50%) translateY(0) scale(0.5); }
+    50%  { opacity: 1; transform: translateX(-50%) translateY(-28px) scale(1.2); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-50px) scale(0.9); }
+}
+
+/* ── Buttons ────────────────────────────────────────────────────── */
+.btn {
+    font-family: 'Fredoka One', cursive;
+    border: none;
+    padding: clamp(12px, 3vw, 16px) clamp(28px, 8vw, 48px);
+    font-size: clamp(1rem, 4vw, 1.3rem);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12), 0 -3px 0 rgba(0,0,0,0.08) inset;
+    letter-spacing: 0.3px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.15s;
+    border-radius: inherit;
+}
+
+.btn:active::after { background: rgba(255,255,255,0.2); }
+.btn:active { transform: scale(0.95) translateY(2px); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+
+.start-btn {
+    background: linear-gradient(135deg, #FF9ABB 0%, #FF6B94 100%);
+    color: white;
+    text-shadow: 0 1px 3px rgba(200,50,80,0.4);
+    margin-bottom: 8px;
+}
+
+.start-btn:hover {
+    background: linear-gradient(135deg, #FF6B94 0%, #FF4477 100%);
+    box-shadow: 0 6px 20px rgba(255,100,150,0.4);
+    transform: translateY(-2px);
+}
+
+.next-btn {
+    background: linear-gradient(135deg, #FFD6E8 0%, #FFB6C1 100%);
+    color: var(--brown);
+    width: 85%;
+    max-width: 260px;
+    display: block;
+    margin: 0 auto;
+    text-shadow: none;
+}
+
+.next-btn:hover {
+    background: linear-gradient(135deg, #FFB6C1 0%, #FF9ABB 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255,100,150,0.3);
+}
+
+.reset-btn {
+    background: linear-gradient(135deg, #fff 0%, #ffeef3 100%);
+    color: var(--brown);
+    border: 2px solid var(--pink);
+    padding: clamp(10px, 2.5vw, 14px) clamp(24px, 6vw, 38px);
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: 0 3px 10px rgba(255,150,180,0.2);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.reset-btn:hover {
+    background: linear-gradient(135deg, #FFB6C1 0%, #FF9ABB 100%);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px);
+}
+
+.reset-btn:active { transform: scale(0.95); }
+
+/* ── Button Group ───────────────────────────────────────────────── */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    width: 100%;
+}
+
+/* ── Timer urgency animation ────────────────────────────────────── */
+.timer-urgent {
+    color: #e53e3e !important;
+    animation: timerPulse 0.5s ease infinite alternate;
+}
+
+@keyframes timerPulse {
+    from { transform: scale(1); }
+    to   { transform: scale(1.25); }
+}
+
+/* ── Countdown overlay ──────────────────────────────────────────── */
+#countdownOverlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(6px);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    gap: 8px;
+}
+
+.countdown-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(4rem, 18vw, 6rem);
+    color: var(--pink-dd);
+    text-shadow: 0 4px 0 rgba(200,50,80,0.2);
+    animation: cdPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    line-height: 1;
+}
+
+.countdown-label {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+    color: var(--brown-l);
+    letter-spacing: 1px;
+}
+
+@keyframes cdPop {
+    from { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+/* ── Result page ────────────────────────────────────────────────── */
+.result-gif {
+    width: clamp(100px, 35vw, 160px);
+    height: auto;
+    margin: 12px 0;
+    border-radius: 16px;
+    filter: drop-shadow(0 8px 16px rgba(255,100,150,0.3));
+    animation: gifBounce 1s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
+}
+
+@keyframes gifBounce {
+    from { transform: scale(0) rotate(-10deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.result-score {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1rem, 4.5vw, 1.3rem);
+    background: linear-gradient(135deg, rgba(255,182,193,0.4), rgba(255,255,255,0.6));
+    color: var(--brown);
+    border-radius: 50px;
+    padding: 12px 24px;
+    margin: 10px 0;
+    border: 1.5px solid rgba(255,182,193,0.4);
+}
+
+.result-score #finalScore {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    color: var(--pink-dd);
+}
+
+.score-label {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--brown-l);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+/* Score rank badge */
+.rank-badge {
+    display: inline-block;
+    padding: 4px 16px;
+    border-radius: 50px;
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(0.8rem, 3.5vw, 1rem);
+    margin: 8px 0;
+    background: linear-gradient(135deg, #FFD6E8, #FFB6C1);
+    color: var(--brown);
+    box-shadow: 0 2px 8px rgba(255,100,150,0.2);
+    animation: badgePop 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.6s both;
+}
+
+@keyframes badgePop {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+/* ── Hole grass rim ─────────────────────────────────────────────── */
+.hole-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+}
+
+.hole-grass {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 92%;
+    height: 22%;
+    background: radial-gradient(ellipse, #5CB85C 60%, transparent 100%);
+    border-radius: 50%;
+    z-index: 3;
+    pointer-events: none;
+    filter: blur(1px);
+}
+
+/* ── Score combo flash ──────────────────────────────────────────── */
+.combo-flash {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #FF6B94, #FF9ABB);
+    color: white;
+    padding: 8px 24px;
+    border-radius: 50px;
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+    box-shadow: 0 4px 16px rgba(255,100,150,0.4);
+    z-index: 100;
+    pointer-events: none;
+    animation: comboIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+    white-space: nowrap;
+}
+
+.combo-flash.out {
+    animation: comboOut 0.3s ease forwards;
+}
+
+@keyframes comboIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(-20px) scale(0.8); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+@keyframes comboOut {
+    to { opacity: 0; transform: translateX(-50%) translateY(-15px) scale(0.9); }
+}
+
+/* ── Miss flash ─────────────────────────────────────────────────── */
+.miss-text {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Fredoka One', cursive;
+    color: #aaa;
+    font-size: 0.85rem;
+    pointer-events: none;
+    z-index: 5;
+    animation: missFloat 0.5s ease-out forwards;
+}
+
+@keyframes missFloat {
+    0%   { opacity: 0.7; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+}
+
+/* ── End game overlay ───────────────────────────────────────────── */
+#endOverlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,245,247,0.92);
+    backdrop-filter: blur(8px);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    gap: 12px;
+    animation: containerPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+.end-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    color: var(--brown);
+}
+
+.end-score-display {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2.5rem, 10vw, 3.5rem);
+    color: var(--pink-dd);
+    text-shadow: 0 4px 0 rgba(200,50,80,0.2);
+    line-height: 1;
+}
+
+.end-score-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--brown-l);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 380px) {
+    .mole-container { padding: 16px; border-radius: 20px; }
+    .mole-board { gap: 8px; padding: 8px; }
+}
+
+@media (min-width: 600px) {
+    .mole-container { max-width: 460px; }
+}
+
+/* ── Shake animation for game-over ─────────────────────────────── */
+.shake {
+    animation: shakeBoard 0.5s ease both;
+}
+
+@keyframes shakeBoard {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-10px) rotate(-1deg); }
+    40%       { transform: translateX(10px) rotate(1deg); }
+    60%       { transform: translateX(-6px); }
+    80%       { transform: translateX(6px); }
+}

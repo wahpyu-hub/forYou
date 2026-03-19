@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Whack a Mole - Pentol Quby</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="mole-game">
+
+    <div class="mole-container" id="mainContainer">
+
+        <!-- Countdown overlay -->
+        <div id="countdownOverlay" style="display:none;">
+            <div class="countdown-num" id="countdownNum">3</div>
+            <div class="countdown-label">Bersiap…</div>
+        </div>
+
+        <h1 class="game-title" id="gameTitle">Whack a Quby!</h1>
+        <p class="game-subtitle" id="gameSubtitle">Pentol Quby muncul — ayo pukul!</p>
+
+        <!-- Start button -->
+        <button id="startBtn" class="btn start-btn">Mulai Game </button>
+
+        <!-- Game area (hidden until started) -->
+        <div id="gameStatus" style="display:none;">
+            <div class="status">
+                <div class="stat-item">
+                    <span class="stat-label">Skor</span>
+                    <span class="stat-value" id="score">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Waktu</span>
+                    <span class="stat-value" id="timer">30</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Level</span>
+                    <span class="stat-value" id="levelDisplay">1</span>
+                </div>
+            </div>
+            <div class="mole-board" id="moleBoard"></div>
+        </div>
+
+    </div>
+
+    <script src="mole.js"></script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #f5f5f5; /* warna netral */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    margin: 45px;
+}
+
+.container {
+    text-align: center;
+}
+
+.btn {
+    background-color: #e0e0e0; /* netral */
+    color: #333;
+    border: none;
+    padding: 18px 48px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+.btn:hover {
+    background-color: #d0d0d0;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.Play-Game {
+    background: radial-gradient(circle, #3d0b1a 0%, #000000 80%);
+}
+
+/* game container */
+.game-container {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.game-title {
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
+
+.status {
+    color: #fff;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    background: rgba(255,255,255,0.1);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.cell {
+    aspect-ratio: 1 / 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    text-shadow: 0 0 15px currentColor;
+}
+
+.cell.X {
+    color: #ff6b6b;
+    text-shadow: 0 0 20px #ff6b6b;
+}
+
+.cell.O {
+    color: #4ecdc4;
+    text-shadow: 0 0 20px #4ecdc4;
+}
+
+.cell:hover:not(.disabled) {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+}
+
+.cell.disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.reset-btn {
+    background: #fff;
+    color: #333;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.reset-btn:hover {
+    background: #f0f0f0;
+    transform: scale(1.05);
+}
+
+.reset-btn:active {
+    transform: scale(0.95);
+}
+
+/* Tambahkan di akhir file */
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.next-btn {
+    background: #fff;
+    color: #333;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.next-btn:hover {
+    background: #f0f0f0;
+    transform: scale(1.05);
+}
+
+.next-btn:active {
+    transform: scale(0.95);
+}
+
+/* Animasi masuk untuk halaman utama dan halaman game */
+.container,
+.game-container {
+    animation: fadeInUp 1s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== RESULT OVERLAY ===== */
+.result-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.result-overlay.show {
+    pointer-events: all;
+    opacity: 1;
+}
+
+/* Menang */
+.result-overlay.win {
+    background: radial-gradient(ellipse at center,
+        rgba(255, 215, 0, 0.25) 0%,
+        rgba(255, 140, 0, 0.1) 60%,
+        transparent 80%);
+    animation: overlayFadeIn 0.4s ease forwards;
+}
+
+/* Kalah */
+.result-overlay.lose {
+    background: radial-gradient(ellipse at center,
+        rgba(255, 50, 50, 0.2) 0%,
+        rgba(180, 0, 0, 0.1) 60%,
+        transparent 80%);
+    animation: overlayFadeIn 0.4s ease forwards;
+}
+
+/* Seri */
+.result-overlay.draw {
+    background: radial-gradient(ellipse at center,
+        rgba(100, 200, 255, 0.2) 0%,
+        rgba(0, 100, 200, 0.1) 60%,
+        transparent 80%);
+    animation: overlayFadeIn 0.4s ease forwards;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Kartu hasil di tengah */
+.result-card {
+    background: rgba(15, 15, 20, 0.92);
+    border-radius: 24px;
+    padding: 40px 52px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    border: 1px solid rgba(255,255,255,0.12);
+    transform: scale(0.5) translateY(40px);
+    opacity: 0;
+    transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease;
+}
+
+.result-overlay.show .result-card {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+.result-icon {
+    font-size: 4.5rem;
+    display: block;
+    margin-bottom: 12px;
+    animation: iconBounce 0.6s 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes iconBounce {
+    from { transform: scale(0) rotate(-20deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg);  opacity: 1; }
+}
+
+.result-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.win  .result-title { color: #FFD700; text-shadow: 0 0 20px #FFD700, 0 0 40px #FFA500; }
+.lose .result-title { color: #ff6b6b; text-shadow: 0 0 20px #ff4444; }
+.draw .result-title { color: #7DD3FC; text-shadow: 0 0 20px #38BDF8; }
+
+.result-subtitle {
+    color: rgba(255,255,255,0.55);
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+}
+
+.result-close-btn {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px 28px;
+    font-size: 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.15s;
+    backdrop-filter: blur(4px);
+}
+
+.result-close-btn:hover {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.05);
+}
+
+/* ===== WINNING CELLS ===== */
+.cell.winning {
+    animation: winCell 0.5s 0.1s cubic-bezier(0.34,1.56,0.64,1) both;
+    background: rgba(255, 215, 0, 0.2) !important;
+    border-color: rgba(255, 215, 0, 0.6) !important;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+@keyframes winCell {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.18); }
+    100% { transform: scale(1.08); }
+}
+
+/* ===== SHAKE untuk kalah ===== */
+.board.shake {
+    animation: boardShake 0.55s ease;
+}
+
+@keyframes boardShake {
+    0%, 100% { transform: translateX(0); }
+    15%       { transform: translateX(-10px) rotate(-1.5deg); }
+    30%       { transform: translateX(10px)  rotate(1.5deg); }
+    45%       { transform: translateX(-8px)  rotate(-1deg); }
+    60%       { transform: translateX(8px)   rotate(1deg); }
+    75%       { transform: translateX(-4px); }
+    90%       { transform: translateX(4px); }
+}
+
+/* ===== DRAW: pulse biru ===== */
+.board.draw-pulse .cell {
+    animation: drawPulse 0.6s ease both;
+}
+
+.board.draw-pulse .cell:nth-child(1) { animation-delay: 0.00s; }
+.board.draw-pulse .cell:nth-child(2) { animation-delay: 0.05s; }
+.board.draw-pulse .cell:nth-child(3) { animation-delay: 0.10s; }
+.board.draw-pulse .cell:nth-child(4) { animation-delay: 0.15s; }
+.board.draw-pulse .cell:nth-child(5) { animation-delay: 0.20s; }
+.board.draw-pulse .cell:nth-child(6) { animation-delay: 0.25s; }
+.board.draw-pulse .cell:nth-child(7) { animation-delay: 0.30s; }
+.board.draw-pulse .cell:nth-child(8) { animation-delay: 0.35s; }
+.board.draw-pulse .cell:nth-child(9) { animation-delay: 0.40s; }
+
+@keyframes drawPulse {
+    0%   { transform: scale(1);    background: rgba(255,255,255,0.1); }
+    50%  { transform: scale(1.06); background: rgba(100,200,255,0.25); }
+    100% { transform: scale(1);    background: rgba(255,255,255,0.1); }
+}
+
+/* ===== CONFETTI CANVAS ===== */
+#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 998;
+}
+

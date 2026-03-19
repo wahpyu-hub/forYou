@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Falling Quby 🍡</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="falling.css">
+</head>
+<body>
+
+<div class="bg-bubble b1"></div>
+<div class="bg-bubble b2"></div>
+<div class="bg-bubble b3"></div>
+<div class="bg-bubble b4"></div>
+
+<div class="container">
+
+    <!-- Header skor & timer -->
+    <div class="header">
+        <div class="stat-box">
+            <span class="stat-label">SKOR</span>
+            <span class="stat-value" id="score">0</span>
+        </div>
+        <div class="stat-box center-stat">
+            <span class="stat-label">LEVEL</span>
+            <span class="stat-value" id="level-display">1</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-label">WAKTU</span>
+            <span class="stat-value timer-val" id="timer">30</span>
+        </div>
+    </div>
+
+    <!-- Area game -->
+    <div id="game-area">
+
+        <!-- START overlay (tampil di dalam game area) -->
+        <div id="start-overlay" class="start-overlay">
+            <div class="start-overlay-title">Falling Quby </div>
+            <div class="start-overlay-sub">Tangkap semua Quby yang jatuh!</div>
+            <button id="start-btn" class="start-btn">Mulai Game </button>
+        </div>
+
+        <!-- Countdown overlay -->
+        <div id="countdown-overlay" class="countdown-overlay hidden">
+            <div class="countdown-num" id="countdown-num">3</div>
+            <div class="countdown-sub">Bersiap…</div>
+        </div>
+
+        <!-- Combo flash -->
+        <div id="combo-badge" class="combo-badge hidden"></div>
+
+    </div>
+
+    <!-- Score bump display -->
+    <div id="score-bump" class="score-bump hidden">+1</div>
+
+</div>
+
+<script src="falling.js"></script>
+</body>
+</html>

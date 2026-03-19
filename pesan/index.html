@@ -1,0 +1,105 @@
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="images/gift.png" type="image/x-icon">
+  <link rel="stylesheet" href="index.css">
+  <title>Pesan</title>
+  <style>
+    .secret-toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(164, 124, 243, 0.15);
+      border: 1px solid rgba(164, 124, 243, 0.4);
+      color: white;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.82rem;
+      letter-spacing: 1px;
+      padding: 10px 24px;
+      border-radius: 50px;
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      z-index: 99;
+      white-space: nowrap;
+    }
+    .secret-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="night"></div>
+  <h1 class="title"></h1>
+
+  <div style="position: absolute; top: 60vh; width: 100%; display: flex; justify-content: center;">
+    <!-- target="_blank" agar pesan.html buka di tab baru -->
+    <a id="openBtn" href="pesan.html" target="_blank" class="btn">
+      <span class="text">Open</span>
+    </a>
+  </div>
+
+  <div class="secret-toast" id="secretToast"></div>
+
+  <script src="index.js"></script>
+  <script>
+    const openBtn     = document.getElementById('openBtn');
+    const secretToast = document.getElementById('secretToast');
+
+    function updateBtn() {
+      if (localStorage.getItem('pesanDibaca') === 'true') {
+        openBtn.href   = '../flower/flower.html';
+        openBtn.target = '_self';
+      } else {
+        openBtn.href   = 'pesan.html';
+        openBtn.target = '_blank';
+      }
+    }
+    updateBtn();
+
+    // ── Dengarkan pesan dari tab pesan.html ──
+    // Saat "for you" ditekan di pesan.html, tab ini akan redirect ke flower.html
+    const bc = new BroadcastChannel('quby_game');
+    bc.onmessage = (e) => {
+      if (e.data === 'FOR_YOU_PRESSED') {
+        localStorage.setItem('pesanDibaca', 'true');
+        updateBtn();
+        // Redirect tab index ke flower
+        window.location.href = '../flower/flower.html';
+      }
+    };
+
+    // ── Toast helper ──
+    let toastTimer = null;
+    function showToast(msg, duration = 2800) {
+      clearTimeout(toastTimer);
+      secretToast.textContent = msg;
+      secretToast.classList.add('show');
+      toastTimer = setTimeout(() => secretToast.classList.remove('show'), duration);
+    }
+
+    // ── Secret code: ketik "kreator" ──
+    const SECRET = 'kreator';
+    let buffer   = '';
+    let bufTimer = null;
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key.length !== 1) return;
+      buffer += e.key.toLowerCase();
+      if (buffer.length > SECRET.length) buffer = buffer.slice(-SECRET.length);
+      clearTimeout(bufTimer);
+      bufTimer = setTimeout(() => { buffer = ''; }, 2000);
+      if (buffer === SECRET) {
+        buffer = '';
+        localStorage.removeItem('pesanDibaca');
+        updateBtn();
+        showToast('✅ Mode kreator aktif — pesan bisa dibuka kembali');
+      }
+    });
+  </script>
+</body>
+</html>
