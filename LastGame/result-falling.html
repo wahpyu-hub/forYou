@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hasil - Falling Quby</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --blue:    #5BB8F5;
+            --blue-d:  #2E9DE4;
+            --blue-dd: #1A7DC0;
+            --blue-l:  #AEE4FF;
+            --blue-ll: #D6F0FF;
+            --navy:    #1a4a6b;
+            --navy-l:  #3a7aa8;
+            --shadow:  rgba(30, 90, 140, 0.15);
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(150deg, #c8eaff 0%, #ddf2ff 50%, #b8dfff 100%);
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+            animation: blobDrift 10s ease-in-out infinite alternate;
+        }
+        .blob-1 { width: 200px; height: 200px; background: radial-gradient(circle, #7DCFFF, transparent); top: -50px; left: -50px; animation-delay: 0s; }
+        .blob-2 { width: 250px; height: 250px; background: radial-gradient(circle, #AEE4FF, transparent); bottom: -70px; right: -70px; animation-delay: 2s; }
+        .blob-3 { width: 150px; height: 150px; background: radial-gradient(circle, #FFE066, transparent); top: 40%; left: -40px; animation-delay: 4s; }
+
+        @keyframes blobDrift {
+            from { transform: translate(0,0) scale(1); }
+            to   { transform: translate(14px,-18px) scale(1.07); }
+        }
+
+        /* ── Card ── */
+        .card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 380px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 36px;
+            border: 2px solid rgba(174, 228, 255, 0.6);
+            box-shadow: 0 12px 48px var(--shadow), 0 2px 0 rgba(255,255,255,0.9) inset;
+            padding: clamp(24px, 6vw, 32px) clamp(20px, 5vw, 30px);
+            text-align: center;
+            animation: cardIn 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: scale(0.85) translateY(28px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Title (di atas GIF) ── */
+        .result-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(1.6rem, 7vw, 2.2rem);
+            color: var(--navy);
+            margin-bottom: 10px;
+            animation: fadeUp 0.5s ease 0.1s both;
+        }
+
+        /* ── Quby GIF ── */
+        .result-gif {
+            width: clamp(110px, 35vw, 150px);
+            height: auto;
+            margin: 0 auto 16px;
+            display: block;
+            border-radius: 16px;
+            filter: drop-shadow(0 8px 16px rgba(30,100,180,0.2));
+            animation: gifBounce 0.65s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
+        }
+
+        @keyframes gifBounce {
+            from { transform: scale(0) rotate(-8deg); opacity: 0; }
+            to   { transform: scale(1) rotate(0deg);  opacity: 1; }
+        }
+
+        /* ── Score block ── */
+        .score-block {
+            background: linear-gradient(135deg, rgba(174,228,255,0.35), rgba(255,255,255,0.6));
+            border-radius: 20px;
+            border: 1.5px solid rgba(91,184,245,0.3);
+            padding: 14px 40px;
+            margin-bottom: 20px;
+            animation: fadeUp 0.5s ease 0.3s both;
+        }
+
+        .score-label {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--blue-d);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .score-num {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(3rem, 12vw, 4rem);
+            color: var(--blue-dd);
+            text-shadow: 0 4px 0 rgba(30,100,180,0.15);
+            line-height: 1;
+            display: block;
+        }
+
+        /* ── Buttons — full column ── */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            animation: fadeUp 0.5s ease 0.4s both;
+        }
+
+        .rbtn {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(0.9rem, 3.5vw, 1.05rem);
+            border: none;
+            padding: clamp(12px, 2.5vw, 14px) 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.34,1.56,0.64,1);
+            touch-action: manipulation;
+            width: 100%;
+            letter-spacing: 0.2px;
+        }
+
+        .rbtn:active { transform: scale(0.94) translateY(2px); }
+
+        .rbtn-primary {
+            background: linear-gradient(135deg, #5BB8F5, #2E9DE4);
+            color: white;
+            box-shadow: 0 5px 0 #1A7DC0, 0 6px 16px rgba(30,100,180,0.28);
+        }
+        .rbtn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #1A7DC0, 0 10px 22px rgba(30,100,180,0.32);
+        }
+
+        .rbtn-secondary {
+            background: linear-gradient(135deg, #D6F0FF, #AEE4FF);
+            color: var(--navy);
+            box-shadow: 0 4px 0 #7ACFEE, 0 5px 14px rgba(30,100,180,0.15);
+        }
+        .rbtn-secondary:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #AEE4FF, #7DCFFF);
+        }
+
+        .rbtn-ghost {
+            background: rgba(255,255,255,0.7);
+            color: var(--navy-l);
+            border: 1.5px solid rgba(91,184,245,0.35);
+            box-shadow: 0 3px 0 rgba(91,184,245,0.2);
+        }
+        .rbtn-ghost:hover { background: rgba(214,240,255,0.9); }
+
+        /* ── Confetti canvas ── */
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 99;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="card">
+
+        <h2 class="result-title">Jago Banget kak 🎉</h2>
+
+        <img src="Quby.gif" alt="Quby" class="result-gif">
+
+        <div class="score-block">
+            <span class="score-label">Skor Kamu</span>
+            <span class="score-num" id="final-score">0</span>
+        </div>
+
+        <div class="btn-group">
+            <button class="rbtn rbtn-primary"    id="mainLagiBtn"> Main Lagi ? </button>
+            <button class="rbtn rbtn-secondary"  id="moleBtn"> Main Whack Quby</button>
+            <button class="rbtn rbtn-secondary"  id="tttBtn"> Main  TicTacToe</button>
+            <button class="rbtn rbtn-ghost"      id="stopBtn"> Lain nya  </button>
+        </div>
+
+    </div>
+
+    <script>
+        /* ── Tampilkan skor ── */
+        const score = parseInt(localStorage.getItem('lastFallingScore') || '0');
+        document.getElementById('final-score').textContent = score;
+
+        /* ── Confetti selalu tampil ── */
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx    = canvas.getContext('2d');
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const colors = ['#5BB8F5','#AEE4FF','#FFE066','#7DCFFF','#B6DAFF','#ffffff'];
+        const pieces = Array.from({ length: 120 }, () => ({
+            x:     Math.random() * canvas.width,
+            y:     Math.random() * -canvas.height,
+            w:     Math.random() * 10 + 5,
+            h:     Math.random() * 5  + 3,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rot:   Math.random() * 360,
+            vx:    (Math.random() - 0.5) * 2.5,
+            vy:    Math.random() * 3.5 + 1.5,
+            vr:    (Math.random() - 0.5) * 5,
+        }));
+
+        let frame = 0;
+        (function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            pieces.forEach(p => {
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot * Math.PI / 180);
+                ctx.fillStyle   = p.color;
+                ctx.globalAlpha = Math.max(0, 1 - frame / 160);
+                ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+                ctx.restore();
+                p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+                if (p.y > canvas.height) { p.y = -20; p.x = Math.random() * canvas.width; }
+            });
+            frame++;
+            if (frame < 180) requestAnimationFrame(draw);
+            else ctx.clearRect(0, 0, canvas.width, canvas.height);
+        })();
+
+        /* ── Navigasi tombol ── */
+       document.getElementById('mainLagiBtn').addEventListener('click', () => {
+    window.location.href = 'falling.html';  // sama folder
+});
+document.getElementById('moleBtn').addEventListener('click', () => {
+    window.location.href = '../MasukGame/mole.html';
+});
+document.getElementById('tttBtn').addEventListener('click', () => {
+    window.location.href = '../MasukGame/TicTacToe.html';
+});
+document.getElementById('stopBtn').addEventListener('click', () => {
+    window.location.href = '../Confirm/stop.html';
+});
+    </script>
+</body>
+</html>
